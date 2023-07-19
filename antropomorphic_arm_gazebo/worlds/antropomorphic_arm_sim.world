@@ -1,0 +1,93 @@
+<?xml version="1.0" ?>
+<sdf version="1.4">
+  <!-- We use a custom world for the rrbot so that the camera angle is launched correctly -->
+
+  <world name="default">
+    <include>
+      <uri>model://ground_plane</uri>
+    </include>
+
+    <!-- Global light source -->
+    <include>
+      <uri>model://sun</uri>
+    </include>
+
+    <!-- Focus camera on tall pendulum -->
+    <gui fullscreen='0'>
+      <camera name='user_camera'>
+        <pose>4.927360 -4.376610 3.740080 0.000000 0.275643 2.356190</pose>
+        <view_controller>orbit</view_controller>
+      </camera>
+    </gui>
+
+    <!-- Lights -->
+    <light name='user_point_light_0' type='point'>
+      <pose frame=''>5.3 -3.3 4.0 0 0 0</pose>
+      <diffuse>0.2 0.2 0.2 1</diffuse>
+      <specular>0.1 0.1 0.1 1</specular>
+      <attenuation>
+        <range>10</range>
+        <constant>0.5</constant>
+        <linear>0.01</linear>
+        <quadratic>0.001</quadratic>
+      </attenuation>
+      <cast_shadows>0</cast_shadows>
+      <direction>0 0 -1</direction>
+    </light>
+
+
+    
+    <include>
+      <uri>model://tictactoe_plane</uri>
+      <pose>0 0 0.01 0 0 0</pose>
+    </include>
+
+    <include>
+      <uri>model://tictactoe_board</uri>
+      <pose>1.252430 0 0.0011 0 0 1.5708</pose>
+    </include>
+
+
+    <model name="camera_model">
+      <pose>0 0 2.0 0 0.785379 0</pose>
+      <static>true</static>
+      <link name="camera_link">
+        <sensor type="camera" name="camera1">
+          <update_rate>60</update_rate>
+          <visualize>true</visualize>
+          <camera name="head">
+            <horizontal_fov>1.3962634</horizontal_fov>
+            <image>
+              <width>640</width>
+              <height>480</height>
+              <format>R8G8B8</format>
+            </image>
+            <clip>
+              <near>0.02</near>
+              <far>300</far>
+            </clip>
+            <noise>
+              <type>gaussian</type>
+              <!-- Noise is sampled independently per pixel on each frame.
+                   That pixel's noise value is added to each of its color
+                   channels, which at that point lie in the range [0,1]. -->
+              <mean>0.0</mean>
+              <stddev>0.007</stddev>
+            </noise>
+          </camera>
+          <plugin name="camera_controller" filename="libgazebo_ros_camera.so">
+            <ros>
+              <namespace>demo_cam</namespace>
+              <!-- TODO(louise) Remapping not working due to https://github.com/ros-perception/image_common/issues/93 -->
+              <argument>image_raw:=image_demo</argument>
+              <argument>camera_info:=camera_info_demo</argument>
+            </ros>
+            <!-- camera_name>omit so it defaults to sensor name</camera_name-->
+            <!-- frame_name>omit so it defaults to link name</frameName-->
+          </plugin>
+        </sensor>
+      </link>
+    </model>
+
+  </world>
+</sdf>
